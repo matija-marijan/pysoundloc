@@ -1,8 +1,6 @@
 import numpy as np
 import torch
 
-from .utils.grid import create_fixed_size_grids
-
 from .gcc import gcc_phat_batch
 from .utils.math import SPEED_OF_SOUND, compute_distance_grids
 
@@ -40,8 +38,12 @@ def compute_tdoa_grids(mic_0_signals, mic_1_signals, sr,
     
     batch_size = room_dims.shape[0]
 
-    grids = create_fixed_size_grids(room_dims, n_grid_points)[0]
-    theoretical_tdoa_grids = compute_theoretical_tdoa_grids(mic_0_coords, mic_1_coords, grids)
+    theoretical_tdoa_grids = compute_theoretical_tdoa_grids(
+        mic_0_coords,
+        mic_1_coords,
+        room_dims,
+        n_grid_points,
+    )
 
     cc_vectors, indxs = gcc_phat_batch(mic_0_signals, mic_1_signals, sr)
     tdoa_indxs = argmax(lib.abs(cc_vectors))
